@@ -13,20 +13,22 @@
 
 Auth::routes();
 
-Route::group(['middleware' => ['auth'], 'namespace' => 'Visitor'], function($router) {
+Route::group(['middleware' => ['auth', 'visitor'], 'namespace' => 'Visitor'], function($router) {
     $router->get('/', ['uses' => 'IndexController@index', 'as' => 'visitor.home']);
 
 });
 
-Route::group([
-    'prefix' => 'admin',
-    'namespace' => 'Admin',
-//    'middleware' => ['admin']
-], function($router) {
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function($router) {
 
-    $router->get('/', ['uses' => 'IndexController@index', 'as' => 'admin.panel']);
-    $router->resources([
-        'users' => 'UserController',
-        'images' => 'ImageController',
-    ]);
+    $router->get('/login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
+    $router->post('/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
+
+    $router->group(['middleware' => ['admin']], function($router) {
+
+        $router->get('/', ['uses' => 'IndexController@index', 'as' => 'admin.panel']);
+        $router->resources([
+            'users' => 'UserController',
+            'images' => 'ImageController',
+        ]);
+    });
 });

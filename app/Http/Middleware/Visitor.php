@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\User;
 
-class Admin
+class Visitor
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,10 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->is_admin === User::ROLE_ADMIN) {
+        if (auth()->check() && auth()->user()->is_admin === User::ROLE_VISITOR) {
             return $next($request);
         }
 
-        return redirect()->route('admin.login');
+        return redirect()->route('login');
     }
 }
